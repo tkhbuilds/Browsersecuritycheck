@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chrome Security Audit (Browser-only)</title>
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root{
+      --bg: #0b0c10;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.09);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.65);
+      --border: rgba(255,255,255,.14);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+      --radius2: 22px;
+      --ok: 76 175 80;
+      --warn: 255 193 7;
+      --bad: 244 67 54;
+      --unk: 158 158 158;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#f6f7fb;
+        --panel:#ffffff;
+        --panel2:#ffffff;
+        --text: rgba(0,0,0,.92);
+        --muted: rgba(0,0,0,.60);
+        --border: rgba(0,0,0,.10);
+        --shadow: 0 12px 30px rgba(0,0,0,.10);
+      }
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background: radial-gradient(1200px 700px at 10% -10%, rgba(99,102,241,.18), transparent 60%),
+                  radial-gradient(900px 600px at 110% 10%, rgba(34,197,94,.14), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      font-family: var(--sans);
+    }
+    .wrap{ max-width: 980px; margin: 0 auto; padding: 18px; }
+    .header{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
+      margin: 8px 0 14px;
+    }
+    .hgroup h1{ margin:0; font-size:18px; letter-spacing:.2px;}
+    .hgroup p{ margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.35;}
+    .topActions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .btn{
+      border:1px solid var(--border);
+      background: linear-gradient(to bottom, rgba(255,255,255,.10), rgba(255,255,255,.02));
+      color:var(--text);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 13px;
+      cursor:pointer;
+      box-shadow: none;
+      transition: transform .05s ease, background .2s ease, border-color .2s ease;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      border-color: rgba(99,102,241,.55);
+      background: linear-gradient(to bottom, rgba(99,102,241,.35), rgba(99,102,241,.14));
+    }
+    .btn.ghost{
+      background: transparent;
+    }
+    .btn.small{ padding: 8px 10px; border-radius: 12px; font-size:12px; }
+    .grid{ display:grid; grid-template-columns: 1fr; gap:12px; }
+    @media (min-width: 860px){
+      .grid.two{ grid-template-columns: 1.2fr .8fr; }
+      .grid.cards{ grid-template-columns: 1fr 1fr; }
+    }
+    .card{
+      background: var(--panel);
+      border:1px solid var(--border);
+      border-radius: var(--radius2);
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+    .cardTitle{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-bottom: 10px;
+    }
+    .cardTitle strong{ font-size: 13px; }
+    .pill{
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border:1px solid var(--border);
+      color:var(--muted);
+      user-select:none;
+    }
+    .pill.ok{ border-color: rgba(var(--ok), .55); color: rgba(var(--ok), .95); }
+    .pill.warn{ border-color: rgba(var(--warn), .55); color: rgba(var(--warn), .95); }
+    .pill.bad{ border-color: rgba(var(--bad), .55); color: rgba(var(--bad), .95); }
+    .pill.unk{ border-color: rgba(var(--unk), .50); color: rgba(var(--unk), .95); }
+
+    .kv{ display:grid; gap:6px; font-size:12px; color:var(--muted); line-height:1.35; }
+    .kv b{ color: var(--text); font-weight: 600; }
+    .mono{ font-family: var(--mono); font-size: 11px; }
+    .banner{
+      border-radius: var(--radius2);
+      padding: 12px 14px;
+      border:1px dashed var(--border);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      margin: 0 0 12px;
+    }
+    .banner.bad{
+      border-color: rgba(var(--bad), .35);
+      background: rgba(var(--bad), .08);
+      color: rgba(var(--bad), .95);
+    }
+    .summaryRow{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px;
+    }
+    .stat{
+      flex: 1 1 120px;
+      background: var(--panel2);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      min-width: 140px;
+    }
+    .stat .n{ font-size: 18px; font-weight: 700; line-height:1; }
+    .stat .l{ font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .toolbar{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+      margin: 10px 0 0;
+    }
+    .seg{
+      display:flex; gap:6px; flex-wrap:wrap;
+      padding: 6px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius: 999px;
+    }
+    .seg button{
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      cursor:pointer;
+    }
+    .seg button.active{
+      border-color: rgba(99,102,241,.55);
+      background: rgba(99,102,241,.18);
+      color: var(--text);
+    }
+    .search{
+      flex: 1 1 260px;
+      max-width: 420px;
+      border-radius: 999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 13px;
+      outline:none;
+    }
+    .list{ display:grid; gap:10px; }
+    .item{
+      border-radius: var(--radius2);
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      padding: 12px;
+    }
+    .itemHead{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    }
+    .itemHead .t{
+      display:flex; flex-direction:column; gap:4px;
+    }
+    .itemHead .t .id{ color: var(--muted); font-size: 11px; font-family: var(--mono); }
+    .itemHead .t .name{ font-size: 13px; font-weight: 650; }
+    .itemBody{ margin-top: 10px; display:grid; gap:6px; }
+    .itemBody .line{ font-size: 12px; color: var(--muted); line-height:1.35; }
+    .itemBody .line b{ color: var(--text); font-weight: 600; }
+    details summary{
+      cursor:pointer;
+      color: var(--muted);
+      font-size: 12px;
+      user-select:none;
+    }
+    details pre{
+      margin: 10px 0 0;
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      overflow:auto;
+      font-size: 11px;
+      background: rgba(0,0,0,.22);
+    }
+    @media (prefers-color-scheme: light){
+      details pre{ background: rgba(0,0,0,.04); }
+    }
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 18px;
+      background: rgba(0,0,0,.75);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-size: 12px;
+      display:none;
+      z-index: 9999;
+      max-width: calc(100vw - 24px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (prefers-color-scheme: light){
+      .toast{ background: rgba(0,0,0,.85); }
+    }
+    a.link{ color: inherit; text-decoration: underline; text-decoration-color: rgba(99,102,241,.55); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="hgroup">
+        <h1>Chrome Security Audit (Browser-only)</h1>
+        <p>
+          Runs in mobile Chrome and reports what Web APIs expose + guided behavior tests.
+          It cannot directly read many internal Chrome toggles (Safe Browsing mode, DoH, VPN/proxy, installed CAs).
+        </p>
+      </div>
+      <div class="topActions">
+        <button class="btn primary" id="runAll">Run checks</button>
+        <button class="btn" id="requestPersist">Request persistence</button>
+        <button class="btn" id="copyJson">Copy JSON</button>
+        <button class="btn" id="exportJson">Export JSON</button>
+      </div>
+    </div>
+
+    <div id="fileBanner" class="banner bad" style="display:none">
+      You opened this page via <b>file://</b>. Many checks will be inaccurate or blocked (secure context, cookies, IndexedDB, permissions).
+      Serve this page over <b>https</b> (recommended) or <b>http://localhost</b> for meaningful results.
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <div class="cardTitle">
+          <strong>Executive summary</strong>
+          <span class="pill" id="overallPill">UNKNOWN</span>
+        </div>
+        <div class="kv" id="execText"></div>
+
+        <div class="summaryRow" id="stats"></div>
+
+        <div class="toolbar">
+          <input class="search" id="search" placeholder="Search checks (e.g., cookies, geolocation, safe browsing)..." />
+          <div class="seg" role="tablist" aria-label="Filter checks">
+            <button id="fAll" class="active">All</button>
+            <button id="fPass">Pass</button>
+            <button id="fWarn">Warn</button>
+            <button id="fFail">Fail</button>
+            <button id="fUnk">Unknown</button>
+            <button id="fManual">Manual</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="cardTitle">
+          <strong>Recommended hardening for this audit site</strong>
+          <span class="pill warn">GUIDE</span>
+        </div>
+        <div class="kv">
+          <div><b>Goal:</b> This audit page shouldn’t need sensitive permissions. Keep it minimal.</div>
+          <div><b>Recommendation:</b> Block Camera, Microphone, Location, Notifications for this site unless you intentionally test them.</div>
+          <div><b>Steps:</b> Chrome → (lock icon / tune icon) → <b>Site settings</b> → set to <b>Block</b>.</div>
+          <div class="mono" id="siteOrigin"></div>
+        </div>
+        <div class="summaryRow">
+          <button class="btn small" id="copyHardening">Copy steps</button>
+          <button class="btn small ghost" id="openSiteSettings">Open site settings (manual)</button>
+        </div>
+        <div class="kv" style="margin-top:8px">
+          <div><b>Storage persistence:</b> improves evidence retention on some devices. Tap “Request persistence”.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid cards">
+      <div class="card">
+        <div class="cardTitle">
+          <strong>Manual behavior tests</strong>
+          <span class="pill warn">YOU CONFIRM</span>
+        </div>
+        <div class="kv">
+          <div>Tap a test → Chrome opens a page or runs a test → come back → record outcome.</div>
+          <div class="muted">Manual results are saved and included in JSON export.</div>
+        </div>
+        <div class="list" id="manualList"></div>
+      </div>
+
+      <div class="card">
+        <div class="cardTitle">
+          <strong>Raw JSON (preview)</strong>
+          <span class="pill unk">OUTPUT</span>
+        </div>
+        <details open>
+          <summary>Show / hide JSON</summary>
+          <pre id="jsonOut">{}</pre>
+        </details>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cardTitle">
+        <strong>Checks</strong>
+        <span class="pill" id="countPill">0</span>
+      </div>
+      <div class="list" id="checkList"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  // -------------------------
+  // Storage keys
+  // -------------------------
+  const KEY_STATE = "chrome_audit_state_v2";
+
+  // -------------------------
+  // Helpers
+  // -------------------------
+  const $ = (id) => document.getElementById(id);
+  const nowIso = () => new Date().toISOString();
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function toast(msg){
+    const t = $("toast");
+    t.textContent = msg;
+    t.style.display = "block";
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => t.style.display = "none", 1800);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (ch) => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[ch]));
+  }
+
+  function statusPillClass(status){
+    const s = status.toUpperCase();
+    if (s === "PASS") return "pill ok";
+    if (s === "WARN") return "pill warn";
+    if (s === "FAIL") return "pill bad";
+    if (s === "MANUAL") return "pill warn";
+    return "pill unk";
+  }
+
+  // -------------------------
+  // State model
+  // -------------------------
+  /**
+   * check = { id, name, status, evidence, how, fix, ts, tags[] }
+   * manual = check with status PASS/WARN/FAIL and tags ["manual"]
+   */
+  let state = {
+    version: 2,
+    createdAt: nowIso(),
+    updatedAt: nowIso(),
+    page: { url: location.href, origin: location.origin, protocol: location.protocol },
+    checks: [],
+    notes: []
+  };
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(KEY_STATE);
+      if(!raw) return;
+      const parsed = JSON.parse(raw);
+      if(parsed && parsed.version === 2 && Array.isArray(parsed.checks)){
+        state = parsed;
+      }
+    }catch(_){}
+  }
+
+  function saveState(){
+    state.updatedAt = nowIso();
+    try{ localStorage.setItem(KEY_STATE, JSON.stringify(state)); }catch(_){}
+  }
+
+  function upsertCheck(check){
+    const idx = state.checks.findIndex(c => c.id === check.id);
+    if(idx >= 0) state.checks[idx] = check;
+    else state.checks.push(check);
+    saveState();
+  }
+
+  function getCheck(id){
+    return state.checks.find(c => c.id === id) || null;
+  }
+
+  // -------------------------
+  // Manual tests
+  // -------------------------
+  const manualTests = [
+    {
+      id: "M01_CERT_ERROR",
+      name: "Cert error interstitial (invalid TLS)",
+      desc: "Chrome should show a full-page warning on invalid certificates.",
+      openUrl: "https://expired.badssl.com/",
+      how: "Open test → expect warning/interstitial → return and record.",
+      fix: "If there is NO warning, suspect interception/strange network, or test blocked. Re-test on a different network."
+    },
+    {
+      id: "M02_SAFE_BROWSING",
+      name: "Safe Browsing interstitial (phishing/malware test)",
+      desc: "Chrome should warn on known dangerous pages (behavior-based inference).",
+      openUrl: "https://testsafebrowsing.appspot.com/",
+      how: "Open test index → choose a phishing/mal
