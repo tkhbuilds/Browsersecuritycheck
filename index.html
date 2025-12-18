@@ -3,54 +3,65 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chrome Security Audit (Browser-only)</title>
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="light dark" />
+  <title>Chrome Security Audit (browser-only)</title>
   <style>
     :root{
-      --bg: #0b0c10;
-      --panel: rgba(255,255,255,.06);
-      --panel2: rgba(255,255,255,.09);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.65);
-      --border: rgba(255,255,255,.14);
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius: 16px;
-      --radius2: 22px;
-      --ok: 76 175 80;
-      --warn: 255 193 7;
-      --bad: 244 67 54;
-      --unk: 158 158 158;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      --bg:#0b0c10;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.09);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.65);
+      --border:rgba(255,255,255,.14);
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --radius:16px;
+      --radius2:22px;
+      --ok:76 175 80;
+      --warn:255 193 7;
+      --bad:244 67 54;
+      --unk:158 158 158;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      --sans:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
     @media (prefers-color-scheme: light){
       :root{
         --bg:#f6f7fb;
-        --panel:#ffffff;
-        --panel2:#ffffff;
-        --text: rgba(0,0,0,.92);
-        --muted: rgba(0,0,0,.60);
-        --border: rgba(0,0,0,.10);
-        --shadow: 0 12px 30px rgba(0,0,0,.10);
+        --panel:#fff;
+        --panel2:#fff;
+        --text:rgba(0,0,0,.92);
+        --muted:rgba(0,0,0,.60);
+        --border:rgba(0,0,0,.10);
+        --shadow:0 12px 30px rgba(0,0,0,.10);
       }
     }
     *{ box-sizing:border-box; }
     body{
       margin:0;
-      background: radial-gradient(1200px 700px at 10% -10%, rgba(99,102,241,.18), transparent 60%),
-                  radial-gradient(900px 600px at 110% 10%, rgba(34,197,94,.14), transparent 60%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 700px at 10% -10%, rgba(99,102,241,.18), transparent 60%),
+        radial-gradient(900px 600px at 110% 10%, rgba(34,197,94,.14), transparent 60%),
+        var(--bg);
       color:var(--text);
-      font-family: var(--sans);
+      font-family:var(--sans);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
     }
     .wrap{ max-width: 980px; margin: 0 auto; padding: 18px; }
+
     .header{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
       margin: 8px 0 14px;
+      flex-wrap:wrap;
     }
-    .hgroup h1{ margin:0; font-size:18px; letter-spacing:.2px;}
-    .hgroup p{ margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.35;}
+    .hgroup{ min-width: 240px; flex: 1 1 360px; }
+    .hgroup h1{ margin:0; font-size:18px; letter-spacing:.2px; }
+    .hgroup p{ margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.35; }
+
     .topActions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+
     .btn{
       border:1px solid var(--border);
       background: linear-gradient(to bottom, rgba(255,255,255,.10), rgba(255,255,255,.02));
@@ -59,23 +70,25 @@
       padding: 10px 12px;
       font-size: 13px;
       cursor:pointer;
-      box-shadow: none;
+      box-shadow:none;
       transition: transform .05s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
     }
     .btn:active{ transform: translateY(1px); }
+    .btn:focus-visible{ outline: 2px solid rgba(99,102,241,.65); outline-offset: 2px; }
     .btn.primary{
       border-color: rgba(99,102,241,.55);
       background: linear-gradient(to bottom, rgba(99,102,241,.35), rgba(99,102,241,.14));
     }
-    .btn.ghost{
-      background: transparent;
-    }
+    .btn.ghost{ background: transparent; }
     .btn.small{ padding: 8px 10px; border-radius: 12px; font-size:12px; }
+
     .grid{ display:grid; grid-template-columns: 1fr; gap:12px; }
     @media (min-width: 860px){
       .grid.two{ grid-template-columns: 1.2fr .8fr; }
       .grid.cards{ grid-template-columns: 1fr 1fr; }
     }
+
     .card{
       background: var(--panel);
       border:1px solid var(--border);
@@ -84,10 +97,14 @@
       box-shadow: var(--shadow);
     }
     .cardTitle{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
       margin-bottom: 10px;
     }
     .cardTitle strong{ font-size: 13px; }
+
     .pill{
       font-size: 11px;
       padding: 3px 10px;
@@ -95,6 +112,7 @@
       border:1px solid var(--border);
       color:var(--muted);
       user-select:none;
+      white-space: nowrap;
     }
     .pill.ok{ border-color: rgba(var(--ok), .55); color: rgba(var(--ok), .95); }
     .pill.warn{ border-color: rgba(var(--warn), .55); color: rgba(var(--warn), .95); }
@@ -102,8 +120,9 @@
     .pill.unk{ border-color: rgba(var(--unk), .50); color: rgba(var(--unk), .95); }
 
     .kv{ display:grid; gap:6px; font-size:12px; color:var(--muted); line-height:1.35; }
-    .kv b{ color: var(--text); font-weight: 600; }
+    .kv b{ color: var(--text); font-weight: 650; }
     .mono{ font-family: var(--mono); font-size: 11px; }
+
     .banner{
       border-radius: var(--radius2);
       padding: 12px 14px;
@@ -119,9 +138,8 @@
       background: rgba(var(--bad), .08);
       color: rgba(var(--bad), .95);
     }
-    .summaryRow{
-      display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px;
-    }
+
+    .summaryRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px; }
     .stat{
       flex: 1 1 120px;
       background: var(--panel2);
@@ -130,14 +148,21 @@
       padding: 10px 12px;
       min-width: 140px;
     }
-    .stat .n{ font-size: 18px; font-weight: 700; line-height:1; }
+    .stat .n{ font-size: 18px; font-weight: 800; line-height:1; }
     .stat .l{ font-size: 12px; color: var(--muted); margin-top: 6px; }
+
     .toolbar{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
       margin: 10px 0 0;
     }
     .seg{
-      display:flex; gap:6px; flex-wrap:wrap;
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
       padding: 6px;
       border:1px solid var(--border);
       background: rgba(255,255,255,.03);
@@ -157,6 +182,7 @@
       background: rgba(99,102,241,.18);
       color: var(--text);
     }
+
     .search{
       flex: 1 1 260px;
       max-width: 420px;
@@ -168,6 +194,8 @@
       font-size: 13px;
       outline:none;
     }
+    .search:focus-visible{ outline: 2px solid rgba(99,102,241,.65); outline-offset: 2px; }
+
     .list{ display:grid; gap:10px; }
     .item{
       border-radius: var(--radius2);
@@ -175,23 +203,16 @@
       background: rgba(255,255,255,.03);
       padding: 12px;
     }
-    .itemHead{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-    }
-    .itemHead .t{
-      display:flex; flex-direction:column; gap:4px;
-    }
+    .itemHead{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .itemHead .t{ display:flex; flex-direction:column; gap:4px; min-width: 0; }
     .itemHead .t .id{ color: var(--muted); font-size: 11px; font-family: var(--mono); }
-    .itemHead .t .name{ font-size: 13px; font-weight: 650; }
+    .itemHead .t .name{ font-size: 13px; font-weight: 700; word-break: break-word; }
+
     .itemBody{ margin-top: 10px; display:grid; gap:6px; }
     .itemBody .line{ font-size: 12px; color: var(--muted); line-height:1.35; }
-    .itemBody .line b{ color: var(--text); font-weight: 600; }
-    details summary{
-      cursor:pointer;
-      color: var(--muted);
-      font-size: 12px;
-      user-select:none;
-    }
+    .itemBody .line b{ color: var(--text); font-weight: 650; }
+
+    details summary{ cursor:pointer; color: var(--muted); font-size: 12px; user-select:none; }
     details pre{
       margin: 10px 0 0;
       border:1px solid var(--border);
@@ -204,6 +225,9 @@
     @media (prefers-color-scheme: light){
       details pre{ background: rgba(0,0,0,.04); }
     }
+
+    .rowBtns{ display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
+
     .toast{
       position: fixed;
       left: 50%;
@@ -225,6 +249,7 @@
     @media (prefers-color-scheme: light){
       .toast{ background: rgba(0,0,0,.85); }
     }
+
     a.link{ color: inherit; text-decoration: underline; text-decoration-color: rgba(99,102,241,.55); }
   </style>
 </head>
@@ -232,17 +257,17 @@
   <div class="wrap">
     <div class="header">
       <div class="hgroup">
-        <h1>Chrome Security Audit (Browser-only)</h1>
+        <h1>Chrome Security Audit (browser-only)</h1>
         <p>
-          Runs in mobile Chrome and reports what Web APIs expose + guided behavior tests.
-          It cannot directly read many internal Chrome toggles (Safe Browsing mode, DoH, VPN/proxy, installed CAs).
+          Browser-only; can’t read DoH/VPN/installed CAs/Safe Browsing mode directly.
+          Uses Web APIs + read-only permission state checks + manual behavior tests.
         </p>
       </div>
       <div class="topActions">
-        <button class="btn primary" id="runAll">Run checks</button>
-        <button class="btn" id="requestPersist">Request persistence</button>
-        <button class="btn" id="copyJson">Copy JSON</button>
-        <button class="btn" id="exportJson">Export JSON</button>
+        <button type="button" class="btn primary" id="runAll">Run checks</button>
+        <button type="button" class="btn" id="requestPersist">Request persistence</button>
+        <button type="button" class="btn" id="copyJson">Copy JSON</button>
+        <button type="button" class="btn" id="exportJson">Export JSON</button>
       </div>
     </div>
 
@@ -258,36 +283,33 @@
           <span class="pill" id="overallPill">UNKNOWN</span>
         </div>
         <div class="kv" id="execText"></div>
-
         <div class="summaryRow" id="stats"></div>
-
         <div class="toolbar">
-          <input class="search" id="search" placeholder="Search checks (e.g., cookies, geolocation, safe browsing)..." />
+          <input class="search" id="search" aria-label="Search checks" placeholder="Search checks (e.g., cookies, geolocation, safe browsing)…" />
           <div class="seg" role="tablist" aria-label="Filter checks">
-            <button id="fAll" class="active">All</button>
-            <button id="fPass">Pass</button>
-            <button id="fWarn">Warn</button>
-            <button id="fFail">Fail</button>
-            <button id="fUnk">Unknown</button>
-            <button id="fManual">Manual</button>
+            <button type="button" id="fAll" class="active" role="tab" aria-selected="true">All</button>
+            <button type="button" id="fPass" role="tab" aria-selected="false">Pass</button>
+            <button type="button" id="fWarn" role="tab" aria-selected="false">Warn</button>
+            <button type="button" id="fFail" role="tab" aria-selected="false">Fail</button>
+            <button type="button" id="fUnk" role="tab" aria-selected="false">Unknown</button>
+            <button type="button" id="fManual" role="tab" aria-selected="false">Manual</button>
           </div>
         </div>
       </div>
 
       <div class="card">
         <div class="cardTitle">
-          <strong>Recommended hardening for this audit site</strong>
+          <strong>Hardening guide (for this audit site)</strong>
           <span class="pill warn">GUIDE</span>
         </div>
         <div class="kv">
-          <div><b>Goal:</b> This audit page shouldn’t need sensitive permissions. Keep it minimal.</div>
-          <div><b>Recommendation:</b> Block Camera, Microphone, Location, Notifications for this site unless you intentionally test them.</div>
-          <div><b>Steps:</b> Chrome → (lock icon / tune icon) → <b>Site settings</b> → set to <b>Block</b>.</div>
+          <div><b>Goal:</b> this audit page shouldn’t need sensitive permissions.</div>
+          <div><b>Recommendation:</b> Block <b>Camera</b>, <b>Microphone</b>, <b>Location</b>, <b>Notifications</b> for this site unless you intentionally test them.</div>
+          <div><b>Steps:</b> Chrome → (lock/tune icon) → <b>Site settings</b> → set those permissions to <b>Block</b>.</div>
           <div class="mono" id="siteOrigin"></div>
         </div>
         <div class="summaryRow">
-          <button class="btn small" id="copyHardening">Copy steps</button>
-          <button class="btn small ghost" id="openSiteSettings">Open site settings (manual)</button>
+          <button type="button" class="btn small" id="copyHardening">Copy steps</button>
         </div>
         <div class="kv" style="margin-top:8px">
           <div><b>Storage persistence:</b> improves evidence retention on some devices. Tap “Request persistence”.</div>
@@ -298,12 +320,12 @@
     <div class="grid cards">
       <div class="card">
         <div class="cardTitle">
-          <strong>Manual behavior tests</strong>
+          <strong>Manual tests</strong>
           <span class="pill warn">YOU CONFIRM</span>
         </div>
         <div class="kv">
-          <div>Tap a test → Chrome opens a page or runs a test → come back → record outcome.</div>
-          <div class="muted">Manual results are saved and included in JSON export.</div>
+          <div>Tap “Open/Run” → complete the step → return here → record the outcome.</div>
+          <div>Manual results are saved locally and included in JSON export.</div>
         </div>
         <div class="list" id="manualList"></div>
       </div>
@@ -329,21 +351,14 @@
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (() => {
-  // -------------------------
-  // Storage keys
-  // -------------------------
   const KEY_STATE = "chrome_audit_state_v2";
 
-  // -------------------------
-  // Helpers
-  // -------------------------
   const $ = (id) => document.getElementById(id);
   const nowIso = () => new Date().toISOString();
-  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
   function toast(msg){
     const t = $("toast");
@@ -353,38 +368,55 @@
     toast._t = setTimeout(() => t.style.display = "none", 1800);
   }
 
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, (ch) => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-    }[ch]));
+  function safeJsonStringify(obj){
+    try{ return JSON.stringify(obj, null, 2); }catch(e){ return JSON.stringify({error:String(e)}, null, 2); }
   }
 
   function statusPillClass(status){
-    const s = status.toUpperCase();
+    const s = String(status || "UNKNOWN").toUpperCase();
     if (s === "PASS") return "pill ok";
     if (s === "WARN") return "pill warn";
     if (s === "FAIL") return "pill bad";
-    if (s === "MANUAL") return "pill warn";
     return "pill unk";
+  }
+
+  function makeCheck({id, name, status, evidence, how, fix, tags}){
+    return {
+      id,
+      name,
+      status: String(status || "UNKNOWN").toUpperCase(),
+      evidence: evidence == null ? "" : String(evidence),
+      how: how == null ? "" : String(how),
+      fix: fix == null ? "" : String(fix),
+      ts: nowIso(),
+      tags: Array.isArray(tags) ? tags : []
+    };
+  }
+
+  function canUseLocalStorage(){
+    try{
+      const k = "__ls_test__";
+      localStorage.setItem(k, "1");
+      localStorage.removeItem(k);
+      return true;
+    }catch(_){
+      return false;
+    }
   }
 
   // -------------------------
   // State model
   // -------------------------
-  /**
-   * check = { id, name, status, evidence, how, fix, ts, tags[] }
-   * manual = check with status PASS/WARN/FAIL and tags ["manual"]
-   */
   let state = {
     version: 2,
     createdAt: nowIso(),
     updatedAt: nowIso(),
     page: { url: location.href, origin: location.origin, protocol: location.protocol },
-    checks: [],
-    notes: []
+    checks: []
   };
 
   function loadState(){
+    if (!canUseLocalStorage()) return;
     try{
       const raw = localStorage.getItem(KEY_STATE);
       if(!raw) return;
@@ -392,12 +424,16 @@
       if(parsed && parsed.version === 2 && Array.isArray(parsed.checks)){
         state = parsed;
       }
-    }catch(_){}
+    }catch(_){
+      // ignore
+    }
   }
 
   function saveState(){
     state.updatedAt = nowIso();
-    try{ localStorage.setItem(KEY_STATE, JSON.stringify(state)); }catch(_){}
+    state.page = { url: location.href, origin: location.origin, protocol: location.protocol };
+    if (!canUseLocalStorage()) return;
+    try{ localStorage.setItem(KEY_STATE, JSON.stringify(state)); }catch(_){ /* ignore */ }
   }
 
   function upsertCheck(check){
@@ -411,6 +447,17 @@
     return state.checks.find(c => c.id === id) || null;
   }
 
+  function ensureCheckExists(id, template){
+    const existing = getCheck(id);
+    if (existing) return;
+    upsertCheck(makeCheck({
+      ...template,
+      id,
+      status: template.status || "UNKNOWN",
+      evidence: template.evidence || "Not recorded yet."
+    }));
+  }
+
   // -------------------------
   // Manual tests
   // -------------------------
@@ -421,11 +468,995 @@
       desc: "Chrome should show a full-page warning on invalid certificates.",
       openUrl: "https://expired.badssl.com/",
       how: "Open test → expect warning/interstitial → return and record.",
-      fix: "If there is NO warning, suspect interception/strange network, or test blocked. Re-test on a different network."
+      fix: "If there is NO warning, suspect interception/unusual network, or the test was blocked. Re-test on a different network.",
+      tags: ["manual"]
     },
     {
       id: "M02_SAFE_BROWSING",
       name: "Safe Browsing interstitial (phishing/malware test)",
       desc: "Chrome should warn on known dangerous pages (behavior-based inference).",
       openUrl: "https://testsafebrowsing.appspot.com/",
-      how: "Open test index → choose a phishing/mal
+      how: "Open test index → choose a phishing/malware test URL → expect warning/interstitial → return and record.",
+      fix: "If no warning appears, check Safe Browsing settings, network filtering, or test on another device/network.",
+      tags: ["manual"]
+    },
+    {
+      id: "M03_MIXED_CONTENT",
+      name: "Mixed content (HTTPS page loading HTTP resource)",
+      desc: "If this page is HTTPS, loading an HTTP image should be blocked.",
+      run: async () => {
+        const isHttps = location.protocol === "https:";
+        if (!isHttps){
+          upsertCheck(makeCheck({
+            id: "M03_MIXED_CONTENT",
+            name: "Mixed content (HTTPS page loading HTTP resource)",
+            status: "WARN",
+            evidence: `Not on HTTPS (${location.protocol}). Host on HTTPS to test mixed content blocking.`,
+            how: "Host this page on HTTPS, then run the test.",
+            fix: "Use GitHub Pages/HTTPS or http://localhost where appropriate.",
+            tags: ["manual"]
+          }));
+          renderAll();
+          return;
+        }
+
+        const url = "http://example.com/favicon.ico";
+        const img = new Image();
+        const started = nowIso();
+        const verdict = await new Promise((resolve) => {
+          const done = (ok) => resolve(ok);
+          const timeout = setTimeout(() => done("timeout"), 4000);
+          img.onload = () => { clearTimeout(timeout); done("loaded"); };
+          img.onerror = () => { clearTimeout(timeout); done("blocked"); };
+          // cache-bust to avoid weirdness
+          img.src = url + "?t=" + encodeURIComponent(String(Date.now()));
+        });
+
+        const status = verdict === "blocked" ? "PASS" : "WARN";
+        const evidence = verdict === "blocked"
+          ? `HTTPS page blocked mixed content image load (${url}). Started: ${started}.`
+          : `HTTPS page allowed mixed content image load (${url}). Verdict: ${verdict}. Started: ${started}.`;
+
+        upsertCheck(makeCheck({
+          id: "M03_MIXED_CONTENT",
+          name: "Mixed content (HTTPS page loading HTTP resource)",
+          status,
+          evidence,
+          how: "Run test while on HTTPS; it attempts to load an HTTP favicon image.",
+          fix: "Ensure mixed content is blocked; avoid HTTP subresources on HTTPS pages.",
+          tags: ["manual"]
+        }));
+        renderAll();
+      },
+      how: "Run test on HTTPS; it attempts to load http://example.com/favicon.ico.",
+      fix: "If it loads on HTTPS, mixed content blocking may be disabled or overridden.",
+      tags: ["manual"]
+    }
+  ];
+
+  // -------------------------
+  // Auto checks
+  // -------------------------
+  async function runChecks(){
+    // Context
+    {
+      const isHttps = location.protocol === "https:";
+      const isLocalhost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+      const ok = window.isSecureContext && (isHttps || isLocalhost);
+      upsertCheck(makeCheck({
+        id: "C01_SECURE_CONTEXT",
+        name: "Secure context (HTTPS / localhost + isSecureContext)",
+        status: ok ? "PASS" : "WARN",
+        evidence: `protocol=${location.protocol}, hostname=${location.hostname}, isSecureContext=${String(window.isSecureContext)}`,
+        how: "Check window.isSecureContext and whether the page is served over HTTPS or localhost.",
+        fix: "Host this page on HTTPS (GitHub Pages) or http://localhost.",
+        tags: ["context"]
+      }));
+    }
+
+    {
+      let topLevel = "UNKNOWN";
+      try{ topLevel = (window.top === window.self) ? "PASS" : "WARN"; }catch(_){ topLevel = "WARN"; }
+      upsertCheck(makeCheck({
+        id: "C02_TOP_LEVEL",
+        name: "Top-level browsing context (not in an iframe)",
+        status: topLevel,
+        evidence: topLevel === "PASS" ? "window.top === window.self" : "Embedded in iframe or access blocked.",
+        how: "Compare window.top and window.self.",
+        fix: "Open the page directly (not embedded).",
+        tags: ["context"]
+      }));
+    }
+
+    {
+      const isFile = location.protocol === "file:";
+      upsertCheck(makeCheck({
+        id: "C03_FILE_PROTOCOL",
+        name: "Opened via file:// (accuracy degraded)",
+        status: isFile ? "WARN" : "PASS",
+        evidence: `protocol=${location.protocol}`,
+        how: "Check location.protocol.",
+        fix: "Serve over HTTPS or http://localhost.",
+        tags: ["context"]
+      }));
+    }
+
+    // Identity (record-only)
+    {
+      const ua = navigator.userAgent;
+      const uad = navigator.userAgentData ? safeJsonStringify({
+        brands: navigator.userAgentData.brands,
+        mobile: navigator.userAgentData.mobile,
+        platform: navigator.userAgentData.platform
+      }) : "(navigator.userAgentData not available)";
+
+      upsertCheck(makeCheck({
+        id: "I01_USER_AGENT",
+        name: "User agent (record-only)",
+        status: "UNKNOWN",
+        evidence: `userAgent=${ua}\nuserAgentData=${uad}`,
+        how: "Read navigator.userAgent and (if present) navigator.userAgentData.",
+        fix: "N/A",
+        tags: ["identity"]
+      }));
+    }
+
+    {
+      upsertCheck(makeCheck({
+        id: "I02_LANGUAGES",
+        name: "Language settings (record-only)",
+        status: "UNKNOWN",
+        evidence: `language=${navigator.language}\nlanguages=${safeJsonStringify(navigator.languages || [])}`,
+        how: "Read navigator.language and navigator.languages.",
+        fix: "N/A",
+        tags: ["identity"]
+      }));
+    }
+
+    // Network
+    {
+      upsertCheck(makeCheck({
+        id: "N01_ONLINE",
+        name: "navigator.onLine",
+        status: navigator.onLine ? "PASS" : "WARN",
+        evidence: `navigator.onLine=${String(navigator.onLine)}`,
+        how: "Read navigator.onLine.",
+        fix: "If offline, connect to a network and re-run checks.",
+        tags: ["network"]
+      }));
+    }
+
+    {
+      const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      upsertCheck(makeCheck({
+        id: "N02_CONNECTION",
+        name: "Network Information API (record-only if available)",
+        status: c ? "UNKNOWN" : "UNKNOWN",
+        evidence: c ? safeJsonStringify({
+          effectiveType: c.effectiveType,
+          downlink: c.downlink,
+          rtt: c.rtt,
+          saveData: c.saveData
+        }) : "(navigator.connection not available)",
+        how: "Read navigator.connection (if present).",
+        fix: "N/A",
+        tags: ["network"]
+      }));
+    }
+
+    // Privacy (record-only)
+    {
+      upsertCheck(makeCheck({
+        id: "P01_DNT",
+        name: "Do Not Track (record-only)",
+        status: "UNKNOWN",
+        evidence: `navigator.doNotTrack=${String(navigator.doNotTrack)}`,
+        how: "Read navigator.doNotTrack.",
+        fix: "N/A",
+        tags: ["privacy"]
+      }));
+    }
+
+    // Storage
+    {
+      const enabled = !!navigator.cookieEnabled;
+      upsertCheck(makeCheck({
+        id: "S01_COOKIE_ENABLED",
+        name: "Cookies enabled (navigator.cookieEnabled)",
+        status: enabled ? "PASS" : "WARN",
+        evidence: `navigator.cookieEnabled=${String(navigator.cookieEnabled)}`,
+        how: "Read navigator.cookieEnabled.",
+        fix: "Allow cookies for this site if you need cookie-based tests.",
+        tags: ["storage"]
+      }));
+    }
+
+    {
+      let status = "UNKNOWN";
+      let evidence = "";
+      try{
+        const key = "chrome_audit_cookie_rt";
+        const value = String(Date.now());
+        document.cookie = `${key}=${value}; path=/; SameSite=Lax`;
+        const found = document.cookie.split(";").map(s => s.trim()).find(s => s.startsWith(key + "="));
+        if (found && found.split("=")[1] === value){
+          status = "PASS";
+          evidence = `document.cookie roundtrip ok (${key}=${value})`;
+        } else {
+          status = "WARN";
+          evidence = `Cookie not readable after set. document.cookie='${document.cookie}'`;
+        }
+      }catch(e){
+        status = "WARN";
+        evidence = `Cookie roundtrip threw: ${String(e)}`;
+      }
+
+      upsertCheck(makeCheck({
+        id: "S02_COOKIE_ROUNDTRIP",
+        name: "Cookie roundtrip (set/read)",
+        status,
+        evidence,
+        how: "Set a test cookie via document.cookie and attempt to read it back.",
+        fix: "Allow cookies for this site; avoid file://. Use HTTPS/localhost.",
+        tags: ["storage"]
+      }));
+    }
+
+    {
+      let status = "UNKNOWN";
+      let evidence = "";
+      try{
+        const k = "chrome_audit_ls";
+        const v = String(Date.now());
+        localStorage.setItem(k, v);
+        const out = localStorage.getItem(k);
+        status = out === v ? "PASS" : "WARN";
+        evidence = `set='${v}', get='${out}'`;
+      }catch(e){
+        status = "WARN";
+        evidence = `localStorage threw: ${String(e)}`;
+      }
+
+      upsertCheck(makeCheck({
+        id: "S03_LOCALSTORAGE",
+        name: "localStorage set/get",
+        status,
+        evidence,
+        how: "Write and read a localStorage key.",
+        fix: "Enable storage and avoid file:// or restrictive browsing modes.",
+        tags: ["storage"]
+      }));
+    }
+
+    {
+      let status = "UNKNOWN";
+      let evidence = "";
+      try{
+        const k = "chrome_audit_ss";
+        const v = String(Date.now());
+        sessionStorage.setItem(k, v);
+        const out = sessionStorage.getItem(k);
+        status = out === v ? "PASS" : "WARN";
+        evidence = `set='${v}', get='${out}'`;
+      }catch(e){
+        status = "WARN";
+        evidence = `sessionStorage threw: ${String(e)}`;
+      }
+
+      upsertCheck(makeCheck({
+        id: "S04_SESSIONSTORAGE",
+        name: "sessionStorage set/get",
+        status,
+        evidence,
+        how: "Write and read a sessionStorage key.",
+        fix: "Enable storage and avoid file:// or restrictive browsing modes.",
+        tags: ["storage"]
+      }));
+    }
+
+    {
+      let status = "UNKNOWN";
+      let evidence = "";
+
+      try{
+        if (!("indexedDB" in window)){
+          status = "WARN";
+          evidence = "window.indexedDB not available";
+        } else {
+          status = await new Promise((resolve) => {
+            const dbName = "chrome_audit_idb";
+            const req = indexedDB.open(dbName, 1);
+
+            req.onupgradeneeded = () => {
+              const db = req.result;
+              if (!db.objectStoreNames.contains("kv")) db.createObjectStore("kv");
+            };
+
+            req.onerror = () => {
+              evidence = `indexedDB.open error: ${String(req.error)}`;
+              resolve("WARN");
+            };
+
+            req.onsuccess = () => {
+              const db = req.result;
+              db.onversionchange = () => { try{ db.close(); }catch(_){} };
+
+              const tx = db.transaction("kv", "readwrite");
+              const store = tx.objectStore("kv");
+              const key = "t";
+              const val = { at: Date.now(), msg: "ok" };
+              store.put(val, key);
+
+              tx.oncomplete = () => {
+                try{ db.close(); }catch(_){}
+                evidence = "IndexedDB open + write succeeded";
+                resolve("PASS");
+              };
+              tx.onerror = () => {
+                try{ db.close(); }catch(_){}
+                evidence = `IndexedDB transaction error: ${String(tx.error)}`;
+                resolve("WARN");
+              };
+              tx.onabort = () => {
+                try{ db.close(); }catch(_){}
+                evidence = `IndexedDB transaction aborted: ${String(tx.error)}`;
+                resolve("WARN");
+              };
+            };
+          });
+        }
+      }catch(e){
+        status = "WARN";
+        evidence = `IndexedDB threw: ${String(e)}`;
+      }
+
+      upsertCheck(makeCheck({
+        id: "S05_INDEXEDDB",
+        name: "IndexedDB open + write",
+        status,
+        evidence,
+        how: "Open an IndexedDB database and write a value.",
+        fix: "Avoid file://; ensure storage is enabled; try another profile/device.",
+        tags: ["storage"]
+      }));
+    }
+
+    {
+      let status = "UNKNOWN";
+      let evidence = "";
+      try{
+        if (!navigator.storage || !navigator.storage.persisted){
+          status = "UNKNOWN";
+          evidence = "navigator.storage.persisted not available";
+        } else {
+          const persisted = await navigator.storage.persisted();
+          status = persisted ? "PASS" : "WARN";
+          evidence = `navigator.storage.persisted()=${String(persisted)}`;
+        }
+      }catch(e){
+        status = "UNKNOWN";
+        evidence = `persisted() threw: ${String(e)}`;
+      }
+
+      upsertCheck(makeCheck({
+        id: "S06_PERSISTED",
+        name: "Storage persistence status (navigator.storage.persisted)",
+        status,
+        evidence,
+        how: "Call navigator.storage.persisted().",
+        fix: "Use the Request persistence button and re-check.",
+        tags: ["storage"]
+      }));
+    }
+
+    // Permissions (read-only)
+    await runPermissionChecks();
+
+    // Isolation / capabilities
+    {
+      upsertCheck(makeCheck({
+        id: "X01_CROSSORIGIN_ISOLATED",
+        name: "crossOriginIsolated",
+        status: window.crossOriginIsolated ? "PASS" : "WARN",
+        evidence: `crossOriginIsolated=${String(window.crossOriginIsolated)}`,
+        how: "Read window.crossOriginIsolated.",
+        fix: "Serve with COOP/COEP headers if you need cross-origin isolation.",
+        tags: ["capabilities"]
+      }));
+    }
+
+    {
+      const hasSab = typeof SharedArrayBuffer !== "undefined";
+      upsertCheck(makeCheck({
+        id: "X02_SHAREDARRAYBUFFER",
+        name: "SharedArrayBuffer availability",
+        status: hasSab ? "PASS" : "WARN",
+        evidence: `SharedArrayBuffer=${hasSab ? "available" : "missing"}`,
+        how: "Check typeof SharedArrayBuffer.",
+        fix: "Typically requires cross-origin isolation (COOP/COEP).",
+        tags: ["capabilities"]
+      }));
+    }
+
+    {
+      const has = !!(navigator.storage && navigator.storage.getDirectory);
+      upsertCheck(makeCheck({
+        id: "X03_OPFS",
+        name: "OPFS (navigator.storage.getDirectory)",
+        status: has ? "PASS" : "WARN",
+        evidence: has ? "navigator.storage.getDirectory exists" : "navigator.storage.getDirectory missing",
+        how: "Check navigator.storage.getDirectory capability.",
+        fix: "Use a modern Chrome on HTTPS; OPFS may be unavailable in some contexts.",
+        tags: ["capabilities"]
+      }));
+    }
+
+    {
+      const has = typeof window.showOpenFilePicker === "function";
+      upsertCheck(makeCheck({
+        id: "X04_FILE_PICKER",
+        name: "File picker (showOpenFilePicker)",
+        status: has ? "PASS" : "WARN",
+        evidence: has ? "showOpenFilePicker available" : "showOpenFilePicker missing",
+        how: "Check window.showOpenFilePicker capability.",
+        fix: "Use HTTPS and a compatible Chrome version; some environments disable it.",
+        tags: ["capabilities"]
+      }));
+    }
+
+    renderAll();
+  }
+
+  async function runPermissionChecks(){
+    const perms = [
+      { id: "R01_GEOLOCATION", name: "Permission: geolocation", perm: "geolocation" },
+      { id: "R02_CAMERA", name: "Permission: camera", perm: "camera" },
+      { id: "R03_MICROPHONE", name: "Permission: microphone", perm: "microphone" },
+      { id: "R04_NOTIFICATIONS", name: "Permission: notifications", perm: "notifications" }
+    ];
+
+    for (const p of perms){
+      let status = "UNKNOWN";
+      let evidence = "";
+
+      if (!navigator.permissions || !navigator.permissions.query){
+        status = "UNKNOWN";
+        evidence = "navigator.permissions.query not available";
+      } else {
+        try{
+          const res = await navigator.permissions.query({ name: p.perm });
+          const st = String(res.state || "unknown");
+          if (st === "denied") status = "PASS";
+          else if (st === "prompt" || st === "granted") status = "WARN";
+          else status = "UNKNOWN";
+
+          evidence = `permissions.query(${p.perm}).state=${st}`;
+          if (p.perm === "notifications"){
+            evidence += `\nNotification.permission=${String(Notification && Notification.permission)}`;
+          }
+        }catch(e){
+          status = "UNKNOWN";
+          evidence = `permissions.query(${p.perm}) threw: ${String(e)}`;
+          if (p.perm === "notifications"){
+            try{ evidence += `\nNotification.permission=${String(Notification && Notification.permission)}`; }catch(_){ /* ignore */ }
+          }
+        }
+      }
+
+      upsertCheck(makeCheck({
+        id: p.id,
+        name: p.name,
+        status,
+        evidence,
+        how: "Read-only: navigator.permissions.query(). This should not prompt.",
+        fix: "For this audit site, set these permissions to Block unless intentionally testing.",
+        tags: ["permissions"]
+      }));
+    }
+  }
+
+  // -------------------------
+  // UI rendering
+  // -------------------------
+  function computeCounts(checks){
+    const out = { PASS:0, WARN:0, FAIL:0, UNKNOWN:0, MANUAL:0 };
+    for (const c of checks){
+      const s = String(c.status || "UNKNOWN").toUpperCase();
+      if (s === "PASS") out.PASS++;
+      else if (s === "WARN") out.WARN++;
+      else if (s === "FAIL") out.FAIL++;
+      else out.UNKNOWN++;
+      if (Array.isArray(c.tags) && c.tags.includes("manual")) out.MANUAL++;
+    }
+    return out;
+  }
+
+  function computeOverall(checks){
+    // priority: FAIL > WARN > UNKNOWN > PASS
+    let hasAny = false;
+    let hasFail = false;
+    let hasWarn = false;
+    let hasUnknown = false;
+
+    for (const c of checks){
+      hasAny = true;
+      const s = String(c.status || "UNKNOWN").toUpperCase();
+      if (s === "FAIL") hasFail = true;
+      else if (s === "WARN") hasWarn = true;
+      else if (s === "UNKNOWN") hasUnknown = true;
+    }
+
+    if (!hasAny) return { status: "UNKNOWN", label: "UNKNOWN" };
+    if (hasFail) return { status: "FAIL", label: "FAIL" };
+    if (hasWarn) return { status: "WARN", label: "WARN" };
+    if (hasUnknown) return { status: "UNKNOWN", label: "UNKNOWN" };
+    return { status: "PASS", label: "PASS" };
+  }
+
+  function renderExec(){
+    const checks = state.checks.slice();
+    const counts = computeCounts(checks);
+    const overall = computeOverall(checks);
+
+    const overallPill = $("overallPill");
+    overallPill.textContent = overall.label;
+    overallPill.className = statusPillClass(overall.status);
+
+    const origin = location.protocol === "file:" ? "(file://; origin is null)" : location.origin;
+
+    const secure = getCheck("C01_SECURE_CONTEXT");
+    const persisted = getCheck("S06_PERSISTED");
+    const cookieRT = getCheck("S02_COOKIE_ROUNDTRIP");
+    const idb = getCheck("S05_INDEXEDDB");
+
+    const manual = checks.filter(c => Array.isArray(c.tags) && c.tags.includes("manual"));
+    const manualRecorded = manual.filter(c => String(c.status).toUpperCase() !== "UNKNOWN").length;
+
+    const lines = [
+      `<div><b>Origin:</b> <span class="mono">${escapeHtml(origin)}</span></div>`,
+      `<div><b>Secure context:</b> ${pillInline(secure ? secure.status : "UNKNOWN")} <span class="mono">${escapeHtml(secure ? secure.evidence : "")}</span></div>`,
+      `<div><b>Key storage:</b> cookies ${pillInline(cookieRT ? cookieRT.status : "UNKNOWN")}, indexedDB ${pillInline(idb ? idb.status : "UNKNOWN")}, persisted ${pillInline(persisted ? persisted.status : "UNKNOWN")}</div>`,
+      `<div><b>Manual tests:</b> <span class="mono">${manualRecorded}/${manual.length}</span> recorded</div>`
+    ];
+
+    $("execText").innerHTML = lines.join("");
+
+    const stats = $("stats");
+    stats.innerHTML = [
+      statBox(counts.PASS, "Pass"),
+      statBox(counts.WARN, "Warn"),
+      statBox(counts.FAIL, "Fail"),
+      statBox(counts.UNKNOWN, "Unknown"),
+      statBox(counts.MANUAL, "Manual")
+    ].join("");
+  }
+
+  function statBox(n, label){
+    return `<div class="stat"><div class="n">${n}</div><div class="l">${escapeHtml(label)}</div></div>`;
+  }
+
+  function pillInline(status){
+    const s = String(status || "UNKNOWN").toUpperCase();
+    const cls = statusPillClass(s);
+    return `<span class="${cls}" style="vertical-align:middle">${escapeHtml(s)}</span>`;
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, (ch) => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[ch]));
+  }
+
+  function renderManual(){
+    const hostIsHttps = location.protocol === "https:";
+
+    const items = manualTests.map(t => {
+      ensureCheckExists(t.id, {
+        name: t.name,
+        status: "UNKNOWN",
+        evidence: "Not recorded yet.",
+        how: t.how,
+        fix: t.fix,
+        tags: ["manual"]
+      });
+
+      const c = getCheck(t.id);
+      const pill = `<span class="${statusPillClass(c ? c.status : "UNKNOWN")}">${escapeHtml((c && c.status) || "UNKNOWN")}</span>`;
+
+      const openBtnLabel = t.openUrl ? "Open" : "Run";
+      const disabled = (!t.openUrl && !t.run) ? "disabled" : "";
+      const hint = (t.id === "M03_MIXED_CONTENT" && !hostIsHttps)
+        ? `<div class="line"><b>Note:</b> Host on HTTPS to test mixed-content blocking.</div>`
+        : "";
+
+      const evidenceLine = c && c.evidence ? `<div class="line"><b>Evidence:</b> ${escapeHtml(c.evidence)}</div>` : "";
+
+      return `
+        <div class="item" data-manual-id="${escapeHtml(t.id)}">
+          <div class="itemHead">
+            <div class="t">
+              <div class="id">${escapeHtml(t.id)}</div>
+              <div class="name">${escapeHtml(t.name)}</div>
+            </div>
+            ${pill}
+          </div>
+          <div class="itemBody">
+            <div class="line">${escapeHtml(t.desc || "")}</div>
+            ${hint}
+            ${evidenceLine}
+            <div class="rowBtns">
+              <button type="button" class="btn small" data-action="manual-open" data-id="${escapeHtml(t.id)}" ${disabled}>${openBtnLabel}</button>
+              <button type="button" class="btn small" data-action="manual-pass" data-id="${escapeHtml(t.id)}">Warning shown ✅</button>
+              <button type="button" class="btn small ghost" data-action="manual-warn" data-id="${escapeHtml(t.id)}">No warning ❌</button>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    $("manualList").innerHTML = items.join("");
+  }
+
+  function getFilter(){
+    return renderAll._filter || "ALL";
+  }
+
+  function setFilter(v){
+    renderAll._filter = v;
+    const tabs = [
+      { id: "fAll", v: "ALL" },
+      { id: "fPass", v: "PASS" },
+      { id: "fWarn", v: "WARN" },
+      { id: "fFail", v: "FAIL" },
+      { id: "fUnk", v: "UNKNOWN" },
+      { id: "fManual", v: "MANUAL" }
+    ];
+
+    for (const t of tabs){
+      const el = $(t.id);
+      const active = (t.v === v);
+      el.classList.toggle("active", active);
+      el.setAttribute("aria-selected", active ? "true" : "false");
+    }
+
+    renderChecksList();
+  }
+
+  function matchesSearch(check, q){
+    if (!q) return true;
+    const hay = [
+      check.id,
+      check.name,
+      check.status,
+      check.evidence,
+      check.how,
+      check.fix,
+      Array.isArray(check.tags) ? check.tags.join(" ") : ""
+    ].join("\n").toLowerCase();
+    return hay.includes(q);
+  }
+
+  function applyFilter(checks){
+    const f = getFilter();
+    const q = String($("search").value || "").trim().toLowerCase();
+
+    return checks.filter(c => {
+      const isManual = Array.isArray(c.tags) && c.tags.includes("manual");
+      if (f === "MANUAL"){
+        if (!isManual) return false;
+      } else if (f !== "ALL"){
+        if (String(c.status || "UNKNOWN").toUpperCase() !== f) return false;
+      }
+
+      return matchesSearch(c, q);
+    });
+  }
+
+  function renderChecksList(){
+    const all = state.checks.slice().sort((a,b) => String(a.id).localeCompare(String(b.id)));
+    const filtered = applyFilter(all);
+
+    $("countPill").textContent = `${filtered.length} / ${all.length}`;
+
+    const items = filtered.map(c => {
+      const tags = (Array.isArray(c.tags) && c.tags.length)
+        ? `<div class="line"><b>Tags:</b> <span class="mono">${escapeHtml(c.tags.join(", "))}</span></div>`
+        : "";
+
+      const how = c.how ? `<div class="line"><b>How:</b> ${escapeHtml(c.how)}</div>` : "";
+      const fix = c.fix ? `<div class="line"><b>Fix:</b> ${escapeHtml(c.fix)}</div>` : "";
+
+      return `
+        <div class="item">
+          <div class="itemHead">
+            <div class="t">
+              <div class="id">${escapeHtml(c.id)}</div>
+              <div class="name">${escapeHtml(c.name)}</div>
+            </div>
+            <span class="${statusPillClass(c.status)}">${escapeHtml(c.status)}</span>
+          </div>
+          <div class="itemBody">
+            ${tags}
+            <div class="line"><b>Evidence:</b> ${escapeHtml(c.evidence || "")}</div>
+            ${how}
+            ${fix}
+            <details>
+              <summary>Raw object</summary>
+              <pre>${escapeHtml(safeJsonStringify(c))}</pre>
+            </details>
+          </div>
+        </div>
+      `;
+    });
+
+    $("checkList").innerHTML = items.join("");
+  }
+
+  function buildExportObject(){
+    return {
+      schema: "chrome-audit.v2",
+      generatedAt: nowIso(),
+      page: {
+        url: location.href,
+        origin: location.origin,
+        protocol: location.protocol
+      },
+      userAgent: navigator.userAgent,
+      checks: state.checks.slice().sort((a,b) => String(a.id).localeCompare(String(b.id)))
+    };
+  }
+
+  function renderJson(){
+    $("jsonOut").textContent = safeJsonStringify(buildExportObject());
+  }
+
+  function renderFileBanner(){
+    const isFile = location.protocol === "file:";
+    $("fileBanner").style.display = isFile ? "block" : "none";
+  }
+
+  function renderAll(){
+    renderFileBanner();
+    renderExec();
+    renderManual();
+    renderChecksList();
+    renderJson();
+  }
+
+  // -------------------------
+  // Actions
+  // -------------------------
+  async function requestPersistence(){
+    let status = "UNKNOWN";
+    let evidence = "";
+
+    try{
+      if (!navigator.storage || !navigator.storage.persist){
+        status = "UNKNOWN";
+        evidence = "navigator.storage.persist not available";
+      } else {
+        const granted = await navigator.storage.persist();
+        status = granted ? "PASS" : "WARN";
+        evidence = `navigator.storage.persist()=${String(granted)}`;
+      }
+    }catch(e){
+      status = "UNKNOWN";
+      evidence = `persist() threw: ${String(e)}`;
+    }
+
+    upsertCheck(makeCheck({
+      id: "S07_PERSIST_REQUEST",
+      name: "Request storage persistence (navigator.storage.persist)",
+      status,
+      evidence,
+      how: "Call navigator.storage.persist() on user gesture.",
+      fix: "Try again, keep the site open, and ensure storage is allowed.",
+      tags: ["storage"]
+    }));
+
+    await runChecks();
+    toast(status === "PASS" ? "Persistence granted" : "Persistence not granted");
+  }
+
+  async function copyJson(){
+    const text = safeJsonStringify(buildExportObject());
+    try{
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(text);
+        toast("Copied JSON");
+        return;
+      }
+    }catch(_){ /* fall through */ }
+
+    try{
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      toast(ok ? "Copied JSON" : "Copy blocked");
+    }catch(e){
+      toast("Copy blocked");
+    }
+  }
+
+  function exportJson(){
+    const text = safeJsonStringify(buildExportObject());
+    const blob = new Blob([text], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "chrome_audit_results.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    toast("Downloaded JSON");
+  }
+
+  function copyHardening(){
+    const origin = location.protocol === "file:" ? "(file://)" : location.origin;
+    const msg = [
+      `Hardening guide for: ${origin}`,
+      "Chrome → lock/tune icon → Site settings:",
+      "- Camera: Block",
+      "- Microphone: Block",
+      "- Location: Block",
+      "- Notifications: Block",
+      "(Allow only if intentionally testing.)"
+    ].join("\n");
+
+    (async () => {
+      try{
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          await navigator.clipboard.writeText(msg);
+          toast("Copied steps");
+          return;
+        }
+      }catch(_){ /* fall through */ }
+
+      try{
+        const ta = document.createElement("textarea");
+        ta.value = msg;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        toast(ok ? "Copied steps" : "Copy blocked");
+      }catch(e){
+        toast("Copy blocked");
+      }
+    })();
+  }
+
+  function recordManual(id, status){
+    const t = manualTests.find(x => x.id === id);
+    if (!t) return;
+
+    const existing = getCheck(id);
+    const evidence = status === "PASS" ? "User recorded: Warning shown" : "User recorded: No warning";
+
+    upsertCheck(makeCheck({
+      id,
+      name: t.name,
+      status,
+      evidence,
+      how: t.how,
+      fix: t.fix,
+      tags: ["manual"]
+    }));
+
+    renderAll();
+  }
+
+  async function openOrRunManual(id){
+    const t = manualTests.find(x => x.id === id);
+    if (!t) return;
+
+    if (t.openUrl){
+      window.open(t.openUrl, "_blank", "noopener,noreferrer");
+      toast("Opened test");
+      return;
+    }
+
+    if (t.run){
+      toast("Running test…");
+      await t.run();
+      return;
+    }
+  }
+
+  // -------------------------
+  // Events
+  // -------------------------
+  function wireEvents(){
+    $("runAll").addEventListener("click", () => runChecks());
+    $("requestPersist").addEventListener("click", () => requestPersistence());
+    $("copyJson").addEventListener("click", () => copyJson());
+    $("exportJson").addEventListener("click", () => exportJson());
+    $("copyHardening").addEventListener("click", () => copyHardening());
+
+    $("search").addEventListener("input", () => renderChecksList());
+
+    $("fAll").addEventListener("click", () => setFilter("ALL"));
+    $("fPass").addEventListener("click", () => setFilter("PASS"));
+    $("fWarn").addEventListener("click", () => setFilter("WARN"));
+    $("fFail").addEventListener("click", () => setFilter("FAIL"));
+    $("fUnk").addEventListener("click", () => setFilter("UNKNOWN"));
+    $("fManual").addEventListener("click", () => setFilter("MANUAL"));
+
+    $("manualList").addEventListener("click", async (e) => {
+      const btn = e.target && e.target.closest && e.target.closest("button[data-action]");
+      if (!btn) return;
+
+      const id = btn.getAttribute("data-id");
+      const action = btn.getAttribute("data-action");
+
+      if (action === "manual-open"){
+        await openOrRunManual(id);
+      } else if (action === "manual-pass"){
+        recordManual(id, "PASS");
+        toast("Recorded: Warning shown");
+      } else if (action === "manual-warn"){
+        recordManual(id, "WARN");
+        toast("Recorded: No warning");
+      }
+    });
+  }
+
+  function init(){
+    $("siteOrigin").textContent = location.protocol === "file:" ? "Site origin: (file://; origin is null)" : `Site origin: ${location.origin}`;
+
+    loadState();
+
+    // Ensure manual tests exist in state so they show up in filters/counters even before recording.
+    for (const t of manualTests){
+      ensureCheckExists(t.id, {
+        name: t.name,
+        status: "UNKNOWN",
+        evidence: "Not recorded yet.",
+        how: t.how,
+        fix: t.fix,
+        tags: ["manual"]
+      });
+    }
+
+    wireEvents();
+    setFilter("ALL");
+
+    // Auto-run once on load
+    runChecks().catch((e) => {
+      toast("Run failed (see checks list)");
+      upsertCheck(makeCheck({
+        id: "Z01_RUN_ERROR",
+        name: "Runtime error during checks",
+        status: "WARN",
+        evidence: String(e),
+        how: "Auto-run checks on page load.",
+        fix: "Reload and try again; host on HTTPS.",
+        tags: ["internal"]
+      }));
+      renderAll();
+    });
+
+    renderAll();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
