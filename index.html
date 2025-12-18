@@ -35,7 +35,9 @@
       }
     }
     *{ box-sizing:border-box; }
+    html{ height: 100%; }
     body{
+      min-height: 100%;
       margin:0;
       background: radial-gradient(1200px 700px at 10% -10%, rgba(99,102,241,.18), transparent 60%),
                   radial-gradient(900px 600px at 110% 10%, rgba(34,197,94,.14), transparent 60%),
@@ -51,6 +53,7 @@
     .hgroup h1{ margin:0; font-size:18px; letter-spacing:.2px;}
     .hgroup p{ margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.35;}
     .topActions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+
     .btn{
       border:1px solid var(--border);
       background: linear-gradient(to bottom, rgba(255,255,255,.10), rgba(255,255,255,.02));
@@ -60,22 +63,29 @@
       font-size: 13px;
       cursor:pointer;
       box-shadow: none;
-      transition: transform .05s ease, background .2s ease, border-color .2s ease;
+      transition: transform .05s ease, background .2s ease, border-color .2s ease, opacity .2s ease;
     }
+    .btn:hover{ border-color: rgba(255,255,255,.22); }
     .btn:active{ transform: translateY(1px); }
+    .btn:disabled{ opacity: .55; cursor: not-allowed; }
     .btn.primary{
       border-color: rgba(99,102,241,.55);
       background: linear-gradient(to bottom, rgba(99,102,241,.35), rgba(99,102,241,.14));
     }
-    .btn.ghost{
-      background: transparent;
-    }
+    .btn.ghost{ background: transparent; }
     .btn.small{ padding: 8px 10px; border-radius: 12px; font-size:12px; }
+
+    :focus-visible{
+      outline: 2px solid rgba(99,102,241,.9);
+      outline-offset: 2px;
+    }
+
     .grid{ display:grid; grid-template-columns: 1fr; gap:12px; }
     @media (min-width: 860px){
       .grid.two{ grid-template-columns: 1.2fr .8fr; }
       .grid.cards{ grid-template-columns: 1fr 1fr; }
     }
+
     .card{
       background: var(--panel);
       border:1px solid var(--border);
@@ -88,6 +98,7 @@
       margin-bottom: 10px;
     }
     .cardTitle strong{ font-size: 13px; }
+
     .pill{
       font-size: 11px;
       padding: 3px 10px;
@@ -95,6 +106,7 @@
       border:1px solid var(--border);
       color:var(--muted);
       user-select:none;
+      white-space: nowrap;
     }
     .pill.ok{ border-color: rgba(var(--ok), .55); color: rgba(var(--ok), .95); }
     .pill.warn{ border-color: rgba(var(--warn), .55); color: rgba(var(--warn), .95); }
@@ -104,6 +116,7 @@
     .kv{ display:grid; gap:6px; font-size:12px; color:var(--muted); line-height:1.35; }
     .kv b{ color: var(--text); font-weight: 600; }
     .mono{ font-family: var(--mono); font-size: 11px; }
+
     .banner{
       border-radius: var(--radius2);
       padding: 12px 14px;
@@ -119,9 +132,8 @@
       background: rgba(var(--bad), .08);
       color: rgba(var(--bad), .95);
     }
-    .summaryRow{
-      display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px;
-    }
+
+    .summaryRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px; }
     .stat{
       flex: 1 1 120px;
       background: var(--panel2);
@@ -132,6 +144,7 @@
     }
     .stat .n{ font-size: 18px; font-weight: 700; line-height:1; }
     .stat .l{ font-size: 12px; color: var(--muted); margin-top: 6px; }
+
     .toolbar{
       display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
       margin: 10px 0 0;
@@ -157,6 +170,7 @@
       background: rgba(99,102,241,.18);
       color: var(--text);
     }
+
     .search{
       flex: 1 1 260px;
       max-width: 420px;
@@ -168,6 +182,7 @@
       font-size: 13px;
       outline:none;
     }
+
     .list{ display:grid; gap:10px; }
     .item{
       border-radius: var(--radius2);
@@ -175,17 +190,27 @@
       background: rgba(255,255,255,.03);
       padding: 12px;
     }
-    .itemHead{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-    }
-    .itemHead .t{
-      display:flex; flex-direction:column; gap:4px;
-    }
+    .item:hover{ border-color: rgba(255,255,255,.22); }
+    .itemHead{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .itemHead .t{ display:flex; flex-direction:column; gap:4px; }
     .itemHead .t .id{ color: var(--muted); font-size: 11px; font-family: var(--mono); }
     .itemHead .t .name{ font-size: 13px; font-weight: 650; }
     .itemBody{ margin-top: 10px; display:grid; gap:6px; }
     .itemBody .line{ font-size: 12px; color: var(--muted); line-height:1.35; }
     .itemBody .line b{ color: var(--text); font-weight: 600; }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    select, input[type="text"], textarea{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 12px;
+      outline:none;
+    }
+    textarea{ width: 100%; min-height: 68px; resize: vertical; }
+
     details summary{
       cursor:pointer;
       color: var(--muted);
@@ -204,6 +229,7 @@
     @media (prefers-color-scheme: light){
       details pre{ background: rgba(0,0,0,.04); }
     }
+
     .toast{
       position: fixed;
       left: 50%;
@@ -225,7 +251,24 @@
     @media (prefers-color-scheme: light){
       .toast{ background: rgba(0,0,0,.85); }
     }
+
+    .srOnly{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+
     a.link{ color: inherit; text-decoration: underline; text-decoration-color: rgba(99,102,241,.55); }
+
+    @media (prefers-reduced-motion: reduce){
+      *{ transition: none !important; scroll-behavior: auto !important; }
+    }
   </style>
 </head>
 <body>
@@ -234,7 +277,7 @@
       <div class="hgroup">
         <h1>Chrome Security Audit (Browser-only)</h1>
         <p>
-          Runs in mobile Chrome and reports what Web APIs expose + guided behavior tests.
+          Runs in Chrome (desktop or mobile) and reports what Web APIs expose + guided behavior tests.
           It cannot directly read many internal Chrome toggles (Safe Browsing mode, DoH, VPN/proxy, installed CAs).
         </p>
       </div>
@@ -264,12 +307,12 @@
         <div class="toolbar">
           <input class="search" id="search" placeholder="Search checks (e.g., cookies, geolocation, safe browsing)..." />
           <div class="seg" role="tablist" aria-label="Filter checks">
-            <button id="fAll" class="active">All</button>
-            <button id="fPass">Pass</button>
-            <button id="fWarn">Warn</button>
-            <button id="fFail">Fail</button>
-            <button id="fUnk">Unknown</button>
-            <button id="fManual">Manual</button>
+            <button id="fAll" class="active" type="button">All</button>
+            <button id="fPass" type="button">Pass</button>
+            <button id="fWarn" type="button">Warn</button>
+            <button id="fFail" type="button">Fail</button>
+            <button id="fUnk" type="button">Unknown</button>
+            <button id="fManual" type="button">Manual</button>
           </div>
         </div>
       </div>
@@ -280,14 +323,14 @@
           <span class="pill warn">GUIDE</span>
         </div>
         <div class="kv">
-          <div><b>Goal:</b> This audit page shouldn’t need sensitive permissions. Keep it minimal.</div>
-          <div><b>Recommendation:</b> Block Camera, Microphone, Location, Notifications for this site unless you intentionally test them.</div>
-          <div><b>Steps:</b> Chrome → (lock icon / tune icon) → <b>Site settings</b> → set to <b>Block</b>.</div>
+          <div><b>Goal:</b> this audit page shouldn’t need sensitive permissions. Keep it minimal.</div>
+          <div><b>Recommendation:</b> block Camera, Microphone, Location, Notifications for this site unless you intentionally test them.</div>
+          <div><b>Steps:</b> Chrome → (lock / tune icon) → <b>Site settings</b> → set to <b>Block</b>.</div>
           <div class="mono" id="siteOrigin"></div>
         </div>
         <div class="summaryRow">
-          <button class="btn small" id="copyHardening">Copy steps</button>
-          <button class="btn small ghost" id="openSiteSettings">Open site settings (manual)</button>
+          <button class="btn small" id="copyHardening" type="button">Copy steps</button>
+          <button class="btn small ghost" id="openSiteSettings" type="button">Open site settings (manual)</button>
         </div>
         <div class="kv" style="margin-top:8px">
           <div><b>Storage persistence:</b> improves evidence retention on some devices. Tap “Request persistence”.</div>
@@ -303,7 +346,7 @@
         </div>
         <div class="kv">
           <div>Tap a test → Chrome opens a page or runs a test → come back → record outcome.</div>
-          <div class="muted">Manual results are saved and included in JSON export.</div>
+          <div>Manual results are saved locally and included in JSON export.</div>
         </div>
         <div class="list" id="manualList"></div>
       </div>
@@ -329,21 +372,14 @@
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (() => {
-  // -------------------------
-  // Storage keys
-  // -------------------------
   const KEY_STATE = "chrome_audit_state_v2";
 
-  // -------------------------
-  // Helpers
-  // -------------------------
   const $ = (id) => document.getElementById(id);
   const nowIso = () => new Date().toISOString();
-  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
   function toast(msg){
     const t = $("toast");
@@ -360,7 +396,7 @@
   }
 
   function statusPillClass(status){
-    const s = status.toUpperCase();
+    const s = String(status || "UNKNOWN").toUpperCase();
     if (s === "PASS") return "pill ok";
     if (s === "WARN") return "pill warn";
     if (s === "FAIL") return "pill bad";
@@ -368,13 +404,16 @@
     return "pill unk";
   }
 
-  // -------------------------
-  // State model
-  // -------------------------
-  /**
-   * check = { id, name, status, evidence, how, fix, ts, tags[] }
-   * manual = check with status PASS/WARN/FAIL and tags ["manual"]
-   */
+  function normalizeStatus(s){
+    const v = String(s || "UNKNOWN").toUpperCase();
+    if (["PASS","WARN","FAIL","UNKNOWN","MANUAL"].includes(v)) return v;
+    return "UNKNOWN";
+  }
+
+  function safeJsonParse(raw){
+    try{ return JSON.parse(raw); }catch(_){ return null; }
+  }
+
   let state = {
     version: 2,
     createdAt: nowIso(),
@@ -388,16 +427,16 @@
     try{
       const raw = localStorage.getItem(KEY_STATE);
       if(!raw) return;
-      const parsed = JSON.parse(raw);
-      if(parsed && parsed.version === 2 && Array.isArray(parsed.checks)){
-        state = parsed;
-      }
-    }catch(_){}
+      const parsed = safeJsonParse(raw);
+      if(parsed && parsed.version === 2 && Array.isArray(parsed.checks)) state = parsed;
+    }catch(_){
+      // ignore
+    }
   }
 
   function saveState(){
     state.updatedAt = nowIso();
-    try{ localStorage.setItem(KEY_STATE, JSON.stringify(state)); }catch(_){}
+    try{ localStorage.setItem(KEY_STATE, JSON.stringify(state)); }catch(_){ /* ignore */ }
   }
 
   function upsertCheck(check){
@@ -411,9 +450,123 @@
     return state.checks.find(c => c.id === id) || null;
   }
 
-  // -------------------------
-  // Manual tests
-  // -------------------------
+  function countByStatus(checks){
+    const out = { PASS:0, WARN:0, FAIL:0, UNKNOWN:0, MANUAL:0 };
+    for(const c of checks){
+      const st = normalizeStatus(c.status);
+      out[st] = (out[st] || 0) + 1;
+    }
+    return out;
+  }
+
+  function computeOverall(checks){
+    const statuses = checks.map(c => normalizeStatus(c.status));
+    if(statuses.includes("FAIL")) return "FAIL";
+    if(statuses.includes("WARN")) return "WARN";
+    if(statuses.length === 0) return "UNKNOWN";
+    if(statuses.every(s => s === "PASS")) return "PASS";
+    if(statuses.every(s => s === "UNKNOWN")) return "UNKNOWN";
+    // mixed PASS/UNKNOWN or PASS/MANUAL, etc.
+    return statuses.includes("PASS") ? "WARN" : "UNKNOWN";
+  }
+
+  function renderExec(){
+    const overall = computeOverall(state.checks);
+    const pill = $("overallPill");
+    pill.textContent = overall;
+    pill.className = statusPillClass(overall);
+
+    const counts = countByStatus(state.checks);
+
+    const exec = $("execText");
+    exec.innerHTML = "";
+
+    const urlLine = `<div><b>Page:</b> <span class="mono">${escapeHtml(location.href)}</span></div>`;
+    const ctxLine = `<div><b>Secure context:</b> ${window.isSecureContext ? "Yes" : "No"}</div>`;
+    const tsLine = `<div><b>Last updated:</b> <span class="mono">${escapeHtml(state.updatedAt)}</span></div>`;
+    exec.insertAdjacentHTML("beforeend", urlLine + ctxLine + tsLine);
+
+    const stats = $("stats");
+    stats.innerHTML = "";
+    const makeStat = (n, label) => {
+      const d = document.createElement("div");
+      d.className = "stat";
+      d.innerHTML = `<div class="n">${n}</div><div class="l">${escapeHtml(label)}</div>`;
+      return d;
+    };
+    stats.appendChild(makeStat(counts.PASS, "Pass"));
+    stats.appendChild(makeStat(counts.WARN, "Warn"));
+    stats.appendChild(makeStat(counts.FAIL, "Fail"));
+    stats.appendChild(makeStat(counts.UNKNOWN, "Unknown"));
+    stats.appendChild(makeStat(state.checks.filter(c => (c.tags||[]).includes("manual")).length, "Manual tests"));
+  }
+
+  function renderJson(){
+    const out = $("jsonOut");
+    try{
+      out.textContent = JSON.stringify(state, null, 2);
+    }catch(_){
+      out.textContent = "{}";
+    }
+  }
+
+  function renderChecks(){
+    const list = $("checkList");
+    list.innerHTML = "";
+
+    const q = (String($("search").value || "").trim()).toLowerCase();
+    const filter = (renderChecks._filter || "ALL");
+
+    const filtered = state.checks
+      .slice()
+      .sort((a,b) => String(a.id).localeCompare(String(b.id)))
+      .filter(c => {
+        const st = normalizeStatus(c.status);
+        const isManual = (c.tags||[]).includes("manual");
+        if(filter === "PASS" && st !== "PASS") return false;
+        if(filter === "WARN" && st !== "WARN") return false;
+        if(filter === "FAIL" && st !== "FAIL") return false;
+        if(filter === "UNKNOWN" && st !== "UNKNOWN") return false;
+        if(filter === "MANUAL" && !isManual) return false;
+
+        if(!q) return true;
+        const hay = [c.id, c.name, c.status, c.evidence, (c.tags||[]).join(" ")].join(" ").toLowerCase();
+        return hay.includes(q);
+      });
+
+    $("countPill").textContent = String(filtered.length);
+    $("countPill").className = "pill";
+
+    if(filtered.length === 0){
+      const empty = document.createElement("div");
+      empty.className = "banner";
+      empty.innerHTML = `No checks match your filter/search. Try “All” or clear the search box.`;
+      list.appendChild(empty);
+      return;
+    }
+
+    for(const c of filtered){
+      const item = document.createElement("div");
+      item.className = "item";
+      item.innerHTML = `
+        <div class="itemHead">
+          <div class="t">
+            <div class="id">${escapeHtml(c.id)}</div>
+            <div class="name">${escapeHtml(c.name || "(unnamed)")}</div>
+          </div>
+          <span class="${statusPillClass(c.status)}">${escapeHtml(normalizeStatus(c.status))}</span>
+        </div>
+        <div class="itemBody">
+          ${c.evidence ? `<div class="line"><b>Evidence:</b> ${escapeHtml(c.evidence)}</div>` : ""}
+          ${c.how ? `<div class="line"><b>How to verify:</b> ${escapeHtml(c.how)}</div>` : ""}
+          ${c.fix ? `<div class="line"><b>Suggested fix:</b> ${escapeHtml(c.fix)}</div>` : ""}
+          <div class="line"><b>Timestamp:</b> <span class="mono">${escapeHtml(c.ts || "")}</span></div>
+        </div>
+      `.trim();
+      list.appendChild(item);
+    }
+  }
+
   const manualTests = [
     {
       id: "M01_CERT_ERROR",
@@ -428,4 +581,461 @@
       name: "Safe Browsing interstitial (phishing/malware test)",
       desc: "Chrome should warn on known dangerous pages (behavior-based inference).",
       openUrl: "https://testsafebrowsing.appspot.com/",
-      how: "Open test index → choose a phishing/mal
+      how: "Open test index → choose a phishing/malware URL → expect a warning page → return and record.",
+      fix: "If there is no warning for multiple known test URLs, confirm Safe Browsing is enabled and re-test on a different network/device."
+    },
+    {
+      id: "M03_MIXED_CONTENT",
+      name: "Mixed content blocking (https page loads http subresource)",
+      desc: "Modern Chrome should block/upgrade insecure subresources on HTTPS pages.",
+      openUrl: "https://mixed-content.badssl.com/",
+      how: "Open → look for blocked mixed content indicators in the page/DevTools (if available) → return and record.",
+      fix: "If insecure content loads silently, the environment may be heavily customized or a proxy is rewriting traffic."
+    },
+    {
+      id: "M04_HSTS",
+      name: "HSTS behavior (forced HTTPS)",
+      desc: "Sites with HSTS should enforce HTTPS after first secure visit.",
+      openUrl: "https://hstspreload.org/",
+      how: "Open → follow the instructions on the page (if any) → return and record.",
+      fix: "If HTTPS is not enforced on known HSTS sites, check for interception/proxy or a captive portal."
+    }
+  ];
+
+  function renderManual(){
+    const list = $("manualList");
+    list.innerHTML = "";
+
+    for(const t of manualTests){
+      const saved = getCheck(t.id);
+      const status = normalizeStatus(saved?.status || "UNKNOWN");
+      const notes = saved?.notes || "";
+
+      const item = document.createElement("div");
+      item.className = "item";
+      item.innerHTML = `
+        <div class="itemHead">
+          <div class="t">
+            <div class="id">${escapeHtml(t.id)}</div>
+            <div class="name">${escapeHtml(t.name)}</div>
+          </div>
+          <span class="${statusPillClass(status === "UNKNOWN" ? "MANUAL" : status)}">${escapeHtml(status === "UNKNOWN" ? "MANUAL" : status)}</span>
+        </div>
+        <div class="itemBody">
+          <div class="line">${escapeHtml(t.desc)}</div>
+          <div class="row" style="margin-top:8px">
+            <button class="btn small" type="button" data-open="${escapeHtml(t.openUrl)}">Open test</button>
+            <label class="srOnly" for="sel_${escapeHtml(t.id)}">Result</label>
+            <select id="sel_${escapeHtml(t.id)}" data-id="${escapeHtml(t.id)}">
+              <option value="UNKNOWN">Not recorded</option>
+              <option value="PASS">PASS</option>
+              <option value="WARN">WARN</option>
+              <option value="FAIL">FAIL</option>
+            </select>
+          </div>
+          <details>
+            <summary>How to verify + remediation</summary>
+            <div class="line" style="margin-top:10px"><b>How:</b> ${escapeHtml(t.how)}</div>
+            <div class="line"><b>If it fails:</b> ${escapeHtml(t.fix)}</div>
+            <div class="line" style="margin-top:10px"><b>Notes:</b></div>
+            <textarea data-notes="${escapeHtml(t.id)}" placeholder="Optional notes (what you observed)">${escapeHtml(notes)}</textarea>
+          </details>
+        </div>
+      `.trim();
+
+      list.appendChild(item);
+
+      const sel = item.querySelector(`select[data-id="${CSS.escape(t.id)}"]`);
+      sel.value = status;
+
+      item.querySelector("button[data-open]").addEventListener("click", () => {
+        window.open(t.openUrl, "_blank", "noopener,noreferrer");
+        toast("Opened manual test in a new tab");
+      });
+
+      sel.addEventListener("change", () => {
+        const next = normalizeStatus(sel.value);
+        upsertCheck({
+          id: t.id,
+          name: t.name,
+          status: next,
+          evidence: t.openUrl,
+          how: t.how,
+          fix: t.fix,
+          ts: nowIso(),
+          tags: ["manual"]
+        });
+        renderAll();
+      });
+
+      const ta = item.querySelector(`textarea[data-notes="${CSS.escape(t.id)}"]`);
+      ta.addEventListener("input", () => {
+        const existing = getCheck(t.id);
+        upsertCheck({
+          id: t.id,
+          name: t.name,
+          status: normalizeStatus(existing?.status || "UNKNOWN"),
+          evidence: t.openUrl,
+          how: t.how,
+          fix: t.fix,
+          ts: existing?.ts || nowIso(),
+          tags: ["manual"],
+          notes: ta.value
+        });
+        renderJson();
+      });
+    }
+  }
+
+  async function canQueryPermissions(){
+    return !!(navigator.permissions && navigator.permissions.query);
+  }
+
+  async function queryPerm(name){
+    if(!(await canQueryPermissions())) return { state: "unsupported" };
+    try{
+      // some names may throw in some Chromium builds
+      const res = await navigator.permissions.query({ name });
+      return { state: res.state };
+    }catch(e){
+      return { state: "error", error: String(e && e.message ? e.message : e) };
+    }
+  }
+
+  function pickProtocolCheck(){
+    const p = location.protocol;
+    if(p === "https:"){
+      return { status: "PASS", evidence: "Loaded over HTTPS." };
+    }
+    if(p === "http:"){
+      return { status: "WARN", evidence: "Loaded over HTTP (not encrypted).", fix: "Use HTTPS for meaningful results and safer transport." };
+    }
+    if(p === "file:"){
+      return { status: "FAIL", evidence: "Loaded over file:// (not a secure origin).", fix: "Serve via https or http://localhost." };
+    }
+    return { status: "UNKNOWN", evidence: `Protocol: ${p}` };
+  }
+
+  const AUTO_CHECKS = [
+    {
+      id: "A01_PROTOCOL",
+      name: "Loaded via HTTPS / secure origin",
+      tags: ["transport","secure-context"],
+      run: async () => {
+        const base = pickProtocolCheck();
+        return {
+          status: base.status,
+          evidence: base.evidence,
+          how: "Look at the URL bar: https:// is preferred; file:// will break many APIs.",
+          fix: base.fix || ""
+        };
+      }
+    },
+    {
+      id: "A02_SECURE_CONTEXT",
+      name: "Secure context available",
+      tags: ["secure-context"],
+      run: async () => {
+        const ok = !!window.isSecureContext;
+        return {
+          status: ok ? "PASS" : "FAIL",
+          evidence: `isSecureContext = ${String(ok)}`,
+          how: "Many security-sensitive APIs only work in secure contexts.",
+          fix: ok ? "" : "Use https:// or http://localhost."
+        };
+      }
+    },
+    {
+      id: "A03_COOKIES_ENABLED",
+      name: "Cookies enabled",
+      tags: ["cookies","storage"],
+      run: async () => {
+        const enabled = !!navigator.cookieEnabled;
+        return {
+          status: enabled ? "PASS" : "WARN",
+          evidence: `navigator.cookieEnabled = ${String(enabled)}`,
+          how: "This reflects whether cookies are enabled in the browser.",
+          fix: enabled ? "" : "Enable cookies if the sites you test rely on them."
+        };
+      }
+    },
+    {
+      id: "A04_STORAGE_ESTIMATE",
+      name: "Storage estimate API",
+      tags: ["storage"],
+      run: async () => {
+        if(!(navigator.storage && navigator.storage.estimate)){
+          return { status: "UNKNOWN", evidence: "navigator.storage.estimate not supported.", how: "Support varies by platform.", fix: "" };
+        }
+        try{
+          const est = await navigator.storage.estimate();
+          const quota = typeof est.quota === "number" ? Math.round(est.quota/1024/1024) + " MB" : "unknown";
+          const usage = typeof est.usage === "number" ? Math.round(est.usage/1024/1024) + " MB" : "unknown";
+          return { status: "PASS", evidence: `usage=${usage}, quota=${quota}`, how: "Used for visibility; not inherently good/bad.", fix: "" };
+        }catch(e){
+          return { status: "UNKNOWN", evidence: `estimate error: ${String(e && e.message ? e.message : e)}`, how: "Some contexts block it.", fix: "Use https:// or http://localhost." };
+        }
+      }
+    },
+    {
+      id: "A05_PERSISTENT_STORAGE",
+      name: "Persistent storage (evidence retention)",
+      tags: ["storage"],
+      run: async () => {
+        if(!(navigator.storage && navigator.storage.persisted && navigator.storage.persist)){
+          return { status: "UNKNOWN", evidence: "Persistent Storage API not supported.", how: "Support varies.", fix: "" };
+        }
+        try{
+          const persisted = await navigator.storage.persisted();
+          return {
+            status: persisted ? "PASS" : "WARN",
+            evidence: `persisted=${String(persisted)}`,
+            how: "Tap “Request persistence” to ask the browser to persist storage.",
+            fix: persisted ? "" : "Use “Request persistence” and ensure the site is installed/engaged (varies by platform)."
+          };
+        }catch(e){
+          return { status: "UNKNOWN", evidence: `persisted() error: ${String(e && e.message ? e.message : e)}`, how: "May be blocked in some contexts.", fix: "Use https:// or http://localhost." };
+        }
+      }
+    },
+    {
+      id: "A06_SERVICE_WORKER",
+      name: "Service Worker support",
+      tags: ["service-worker"],
+      run: async () => {
+        const supported = "serviceWorker" in navigator;
+        return {
+          status: supported ? "PASS" : "UNKNOWN",
+          evidence: supported ? "navigator.serviceWorker is available." : "navigator.serviceWorker is not available.",
+          how: "Service workers require secure contexts (except localhost).",
+          fix: supported ? "" : "Use a modern Chromium build and a secure context."
+        };
+      }
+    },
+    {
+      id: "A07_PERMISSION_NOTIFICATIONS",
+      name: "Notifications permission state",
+      tags: ["permissions","notifications"],
+      run: async () => {
+        const p = await queryPerm("notifications");
+        if(p.state === "unsupported"){
+          return { status: "UNKNOWN", evidence: "Permissions API not available.", how: "Behavior varies; manual check in site settings.", fix: "" };
+        }
+        if(p.state === "error"){
+          return { status: "UNKNOWN", evidence: `query error: ${p.error}`, how: "Some browsers restrict queries.", fix: "" };
+        }
+        const status = (p.state === "denied") ? "PASS" : (p.state === "prompt") ? "WARN" : "WARN";
+        const fix = (p.state === "granted") ? "Consider blocking Notifications for this audit site unless testing them." : (p.state === "prompt") ? "Consider setting Notifications to Block for this audit site." : "";
+        return { status, evidence: `notifications=${p.state}`, how: "Chrome → Site settings → Notifications.", fix };
+      }
+    },
+    {
+      id: "A08_PERMISSION_GEOLOCATION",
+      name: "Geolocation permission state",
+      tags: ["permissions","geolocation"],
+      run: async () => {
+        const p = await queryPerm("geolocation");
+        if(p.state === "unsupported") return { status: "UNKNOWN", evidence: "Permissions API not available.", how: "Manual check in site settings.", fix: "" };
+        if(p.state === "error") return { status: "UNKNOWN", evidence: `query error: ${p.error}`, how: "Some builds restrict queries.", fix: "" };
+        const status = (p.state === "denied") ? "PASS" : "WARN";
+        const fix = (p.state === "denied") ? "" : "Consider blocking Location for this audit site unless testing it.";
+        return { status, evidence: `geolocation=${p.state}`, how: "Chrome → Site settings → Location.", fix };
+      }
+    },
+    {
+      id: "A09_PERMISSION_CAMERA",
+      name: "Camera permission state",
+      tags: ["permissions","camera"],
+      run: async () => {
+        // camera is not queryable everywhere; handle errors
+        const p = await queryPerm("camera");
+        if(p.state === "unsupported") return { status: "UNKNOWN", evidence: "Permissions API not available.", how: "Manual check in site settings.", fix: "" };
+        if(p.state === "error") return { status: "UNKNOWN", evidence: `query error: ${p.error}`, how: "Some builds do not support camera querying.", fix: "" };
+        const status = (p.state === "denied") ? "PASS" : "WARN";
+        const fix = (p.state === "denied") ? "" : "Consider blocking Camera for this audit site unless testing it.";
+        return { status, evidence: `camera=${p.state}`, how: "Chrome → Site settings → Camera.", fix };
+      }
+    },
+    {
+      id: "A10_PERMISSION_MICROPHONE",
+      name: "Microphone permission state",
+      tags: ["permissions","microphone"],
+      run: async () => {
+        const p = await queryPerm("microphone");
+        if(p.state === "unsupported") return { status: "UNKNOWN", evidence: "Permissions API not available.", how: "Manual check in site settings.", fix: "" };
+        if(p.state === "error") return { status: "UNKNOWN", evidence: `query error: ${p.error}`, how: "Some builds do not support microphone querying.", fix: "" };
+        const status = (p.state === "denied") ? "PASS" : "WARN";
+        const fix = (p.state === "denied") ? "" : "Consider blocking Microphone for this audit site unless testing it.";
+        return { status, evidence: `microphone=${p.state}`, how: "Chrome → Site settings → Microphone.", fix };
+      }
+    }
+  ];
+
+  async function runAllChecks(){
+    const btn = $("runAll");
+    btn.disabled = true;
+    btn.textContent = "Running…";
+
+    try{
+      const results = [];
+      for(const def of AUTO_CHECKS){
+        try{
+          const r = await def.run();
+          const check = {
+            id: def.id,
+            name: def.name,
+            status: normalizeStatus(r.status),
+            evidence: r.evidence || "",
+            how: r.how || "",
+            fix: r.fix || "",
+            ts: nowIso(),
+            tags: def.tags || []
+          };
+          upsertCheck(check);
+          results.push(check);
+        }catch(e){
+          upsertCheck({
+            id: def.id,
+            name: def.name,
+            status: "UNKNOWN",
+            evidence: `Check error: ${String(e && e.message ? e.message : e)}`,
+            how: "This check threw an exception; treat as unknown.",
+            fix: "Try reloading the page or running on a different Chrome version.",
+            ts: nowIso(),
+            tags: def.tags || []
+          });
+        }
+      }
+
+      toast(`Checks complete (${results.length})`);
+    }finally{
+      btn.disabled = false;
+      btn.textContent = "Run checks";
+      renderAll();
+    }
+  }
+
+  function setFilter(next){
+    renderChecks._filter = next;
+    for(const [id, f] of [["fAll","ALL"],["fPass","PASS"],["fWarn","WARN"],["fFail","FAIL"],["fUnk","UNKNOWN"],["fManual","MANUAL"]]){
+      const el = $(id);
+      const active = (next === f);
+      el.classList.toggle("active", active);
+      el.setAttribute("aria-selected", active ? "true" : "false");
+    }
+    renderChecks();
+  }
+
+  async function copyText(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+  }
+
+  function downloadText(filename, text){
+    const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  async function requestPersistence(){
+    if(!(navigator.storage && navigator.storage.persist)){
+      toast("Persistent Storage API not supported");
+      return;
+    }
+    try{
+      const granted = await navigator.storage.persist();
+      toast(granted ? "Persistence granted" : "Persistence not granted");
+    }catch(e){
+      toast("Persistence request failed");
+    }
+    renderAll();
+  }
+
+  function renderAll(){
+    renderExec();
+    renderManual();
+    renderChecks();
+    renderJson();
+  }
+
+  function init(){
+    loadState();
+
+    // banner for file://
+    const isFile = location.protocol === "file:";
+    $("fileBanner").style.display = isFile ? "block" : "none";
+
+    $("siteOrigin").textContent = `Origin: ${location.origin}`;
+
+    $("runAll").addEventListener("click", runAllChecks);
+    $("requestPersist").addEventListener("click", requestPersistence);
+
+    $("copyJson").addEventListener("click", async () => {
+      try{
+        await copyText(JSON.stringify(state, null, 2));
+        toast("Copied JSON");
+      }catch(_){
+        toast("Copy failed");
+      }
+    });
+
+    $("exportJson").addEventListener("click", () => {
+      const name = `chrome-audit-${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
+      downloadText(name, JSON.stringify(state, null, 2));
+      toast("Exported JSON");
+    });
+
+    $("copyHardening").addEventListener("click", async () => {
+      const txt = [
+        "Recommended hardening for this audit site:",
+        `Origin: ${location.origin}`,
+        "Chrome → (lock / tune icon) → Site settings → set Camera/Microphone/Location/Notifications to Block (unless testing)."
+      ].join("\n");
+      try{
+        await copyText(txt);
+        toast("Copied steps");
+      }catch(_){
+        toast("Copy failed");
+      }
+    });
+
+    $("openSiteSettings").addEventListener("click", () => {
+      // Chrome blocks programmatic navigation to chrome://settings from web pages.
+      toast("Use Chrome’s lock/tune icon → Site settings");
+    });
+
+    $("search").addEventListener("input", () => renderChecks());
+
+    $("fAll").addEventListener("click", () => setFilter("ALL"));
+    $("fPass").addEventListener("click", () => setFilter("PASS"));
+    $("fWarn").addEventListener("click", () => setFilter("WARN"));
+    $("fFail").addEventListener("click", () => setFilter("FAIL"));
+    $("fUnk").addEventListener("click", () => setFilter("UNKNOWN"));
+    $("fManual").addEventListener("click", () => setFilter("MANUAL"));
+
+    setFilter("ALL");
+    renderAll();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
